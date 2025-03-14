@@ -49,27 +49,62 @@
   </div>
 
   <div class="container hidden" id="characterScreen">
-  <h2>選擇你的角色</h2>
-
-  <div class="character-box">
-    <img src="img/boy.png" alt="男同學">
-    <br>
-    <button onclick="chooseCharacter('男同學')">👦 男同學</button>
-  </div>
-
-  <div class="character-box">
-    <img src="img/girl.png" alt="女同學">
-    <br>
-    <button onclick="chooseCharacter('女同學')">👧 女同學</button>
+  <h2>選擇角色</h2>
+  <div class="character-options">
+    <div class="character" onclick="chooseCharacter('男同學')">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="男同學">
+      <p>男同學</p>
+    </div>
+    <div class="character" onclick="chooseCharacter('女同學')">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="女同學">
+      <p>女同學</p>
+    </div>
   </div>
 </div>
+
+<style>
+.character-options {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.character {
+  cursor: pointer;
+  border: 2px solid #ff6b81;
+  border-radius: 12px;
+  padding: 10px;
+  width: 150px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.character:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.character img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.character p {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+</style>
+  </div>
 
   <div class="container hidden" id="questionScreen">
     <h2 id="questionTitle">第一關</h2>
     <p id="questionText">你在KTV，有人請你喝酒並提出更進一步邀約，你會？</p>
-    <button onclick="selectAnswer(10)">A. 拒絕+保持距離 (+10分)</button>
-    <button onclick="selectAnswer(-10)">B. 喝幾杯跟著走 (-10分)</button>
-    <button onclick="selectAnswer(5)">C. 請朋友陪你一起在公共場合 (+5分)</button>
+    <button onclick="selectAnswer(10)">A. 拒絕+保持距離</button>
+    <button onclick="selectAnswer(-10)">B. 喝幾杯跟著走</button>
+    <button onclick="selectAnswer(5)">C. 請朋友陪你一起在公共場合</button>
   </div>
 
   <div class="container hidden" id="resultScreen">
@@ -94,17 +129,32 @@
       {
         title: "第一關",
         text: "你在KTV，有人請你喝酒並提出更進一步邀約，你會？",
-        options: [10, -10, 5]
+        options: [10, -10, 5],
+        answers: [
+          "A. 拒絕+保持距離",
+          "B. 喝幾杯跟著走",
+          "C. 請朋友陪你一起在公共場合"
+        ]
       },
       {
         title: "第二關",
         text: "你發現自己有不正常分泌物，你會？",
-        options: [10, -5, -10]
+        options: [10, -5, -10],
+        answers: [
+          "A. 儘快就醫檢查",
+          "B. 拖著不管，覺得會好",
+          "C. 自己亂買藥吃"
+        ]
       },
       {
         title: "第三關",
-        text: "與交往對象討論性行為時，對方不想使用保險套，你會？",
-        options: [10, -10, 5]
+        text: "交往對象不想使用保險套，你會？",
+        options: [10, -10, 5],
+        answers: [
+          "A. 堅持使用，保障雙方健康",
+          "B. 對方說不戴就不戴",
+          "C. 先相信對方，事後考慮檢查"
+        ]
       }
     ];
 
@@ -124,6 +174,21 @@
       const current = questions[questionIndex];
       questionTitle.textContent = current.title;
       questionText.textContent = current.text;
+
+      // 清空舊按鈕
+      questionScreen.querySelectorAll('button').forEach(btn => {
+        if (!btn.hasAttribute('onclick')) {
+          btn.remove();
+        }
+      });
+
+      // 重新產生按鈕
+      for (let i = 0; i < current.answers.length; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = current.answers[i];
+        btn.onclick = () => selectAnswer(current.options[i]);
+        questionScreen.appendChild(btn);
+      }
     }
 
     function selectAnswer(points) {
@@ -142,8 +207,10 @@
       let resultText = `你的總分： ${score} 分\n`;
       if (score >= 25) {
         resultText += "🎉 恭喜！你是性健康守護者！";
+      } else if (score >= 10) {
+        resultText += "👍 有基礎觀念，但還需要努力哦！";
       } else {
-        resultText += "⚠️ 需要再學習保護自己哦！";
+        resultText += "⚠️ 要加強性病防護知識，再挑戰一次吧！";
       }
       scoreResult.textContent = resultText;
     }
