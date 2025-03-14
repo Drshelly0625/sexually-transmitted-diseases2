@@ -134,7 +134,7 @@
       currentQuestion.options.forEach(option => {
         const btn = document.createElement('button');
         btn.textContent = option.answer;
-        btn.onclick = () => selectAnswer(option.points);
+        btn.onclick = function() { selectAnswer(option.points); };
         optionsContainer.appendChild(btn);
       });
     }
